@@ -13,22 +13,21 @@ Open `http://localhost:8787`.
 ## Cloudflare D1 setup
 
 1. `npx wrangler login`
-2. Create the database: `npx wrangler d1 create tuition-platform-db`
-3. Copy the returned `database_id` into `wrangler.toml`.
-4. Apply schema and demo data:
+2. The existing `tuition-platform-db` is already bound in `wrangler.toml`.
+3. Apply the additive migration; it preserves the existing tuition/media data:
 
 ```bash
 npx wrangler d1 migrations apply tuition-platform-db --remote
-npx wrangler d1 execute tuition-platform-db --remote --file=seed.sql
+npx wrangler d1 execute tuition-platform-db --remote --file=migrations/0002_reports_logs.sql
 ```
 
-5. Set the admin password as a secret:
+4. Set the admin password as a secret:
 
 ```bash
 npx wrangler secret put ADMIN_PASSWORD
 ```
 
-6. Deploy:
+5. Deploy:
 
 ```bash
 npx wrangler deploy

@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS reports (id TEXT PRIMARY KEY, tuition_id INTEGER NOT NULL, reason TEXT NOT NULL, details TEXT DEFAULT '', status TEXT NOT NULL DEFAULT 'new', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(tuition_id) REFERENCES tuitions(id) ON DELETE CASCADE);
+CREATE TABLE IF NOT EXISTS activity_logs (id TEXT PRIMARY KEY, actor_role TEXT NOT NULL, action TEXT NOT NULL, entity_type TEXT, entity_id TEXT, metadata TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status, created_at);
