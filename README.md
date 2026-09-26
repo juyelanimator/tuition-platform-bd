@@ -1,14 +1,14 @@
 # Tuition Platform BD
 
-Cloudflare Workers + D1 ভিত্তিক mobile-first tuition listing platform. Public visitor website, Super Admin panel, Media Agency panel, search/filter, featured listings, commission fields, reports, activity logs, SEO pages, privacy/terms এবং direct phone/WhatsApp contact included.
+Cloudflare Workers + D1 ভিত্তিক mobile-first tuition listing platform. Public visitor website, Super Admin panel, Media Agency panel, structured search/filter, featured listings, commission fields, reports, activity logs, SEO pages, privacy/terms এবং direct phone/WhatsApp contact included.
 
 ## Live routes
 
-- `/` — public listings
+- `/` — public visitor website
 - `/admin` — Super Admin panel
 - `/media` — Media Agency panel
-- `/tuition?code=...` — listing details
-- `/privacy` and `/terms` — public policy pages
+- `/tuition?code=...` — details page
+- `/privacy` and `/terms` — policy pages
 
 ## Local development
 
@@ -16,19 +16,17 @@ Cloudflare Workers + D1 ভিত্তিক mobile-first tuition listing platf
 npx wrangler dev
 ```
 
-Open `http://localhost:8787`.
-
 ## Cloudflare D1 setup
 
-The repository migrations are ordered and safe for a fresh database:
+For a fresh database, run migrations in order:
 
 ```bash
-npx wrangler d1 execute tuition-platform-db --remote --file=migrations/0001_initial.sql
-npx wrangler d1 execute tuition-platform-db --remote --file=migrations/0002_reports_logs.sql
-npx wrangler d1 execute tuition-platform-db --remote --file=migrations/0003_platform_upgrade.sql
+for f in migrations/*.sql; do npx wrangler d1 execute tuition-platform-db --remote --file="$f"; done
 ```
 
-For the existing production database, do not re-run the initial schema. Only apply a migration that has not already been applied.
+Migrations cover the base schema, reports/logs, custom fields, views analytics, media profile/default commission/status, and structured location fields.
+
+For the existing production database, only apply migrations that have not already been applied. Never rerun an `ALTER TABLE ADD COLUMN` migration.
 
 Set the admin password as a Cloudflare secret:
 
@@ -42,25 +40,40 @@ Deploy:
 npx wrangler deploy
 ```
 
-## Features
+## Implemented features
 
-- Public search, tuition type filter, salary sorting and featured ordering
-- Bangla/English homepage toggle and mobile bottom navigation
-- Safety notice, report flow, privacy, terms, robots and sitemap
-- Admin tuition create, publish/hide, feature/unfeature and delete
-- Admin media account creation and enable/disable moderation
-- Admin reports, report resolution and activity logs
-- Media agency login, profile edit, own tuition create/list/delete
-- Media-specific commission and branding fields
-- Expiry-aware public listing visibility
-- Hashed media passwords and hashed session tokens
-- Existing D1 data preserved during additive upgrades
+### Visitor
 
-## GitHub Actions
+- No account required
+- Search by code, location, class, subject or description
+- Division, district, thana, area, class, subject, tuition type, gender, salary and days filters
+- Featured and latest listing sections
+- Fixed, negotiable and commission display support
+- Full details page, call, WhatsApp and report flow
+- Bangla/English toggle, responsive mobile bottom navigation
+- Safety notice, privacy, terms, robots and sitemap
 
-For automatic Cloudflare deployment, add these repository secrets:
+### Super Admin
 
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
+- Dashboard: total, active, expired, featured, hidden, views, media, reports and expiry reminders
+- Create, edit, feature, hide/unhide and permanently delete tuition posts
+- Create, edit, enable/disable and suspend media agencies
+- Default media commission and profile management
+- Reports: resolve or hide reported post
+- Custom field definitions
+- Activity logs
+- Protected admin authentication and hashed sessions
 
-Never commit real secrets, `.dev.vars`, or tokens. Rotate any token that has been exposed.
+### Media Agency
+
+- Admin-created account only
+- Login/session protection
+- Own dashboard: total, active, expired and published posts
+- Agency profile: name, logo, phone, WhatsApp, description, social links and default commission
+- Create, edit, publish, save draft and delete own tuition posts
+- Structured tuition fields and post-level commission override
+- Cannot access another agency's posts or admin routes
+
+## Security
+
+Media passwords and session tokens are hashed. Public detail/report routes reject hidden, deleted, draft and expired posts. Validate and rotate any Cloudflare token that has been exposed.
