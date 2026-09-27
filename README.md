@@ -71,6 +71,8 @@ npx wrangler deploy
 - Own dashboard: total, active, expired and published posts
 - Agency profile: name, logo, phone, WhatsApp, description, social links and default commission
 - Create, edit, publish, save draft and delete own tuition posts
+- Admin-defined custom fields on post forms
+- Structured division/district/thana/area/landmark location fields
 - Structured tuition fields and post-level commission override
 - Cannot access another agency's posts or admin routes
 
