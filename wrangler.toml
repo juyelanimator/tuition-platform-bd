@@ -13,6 +13,10 @@ database_name = "tuition-platform-db"
 database_id = "3cd96a02-6cca-492f-b7b0-c8f96f576b9d"
 migrations_dir = "migrations"
 
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "tuition-platform-bd-media"
+
 [vars]
 APP_NAME = "Tuition Platform BD"
 SESSION_TTL_HOURS = "24"
