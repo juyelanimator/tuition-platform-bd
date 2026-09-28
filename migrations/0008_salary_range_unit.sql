@@ -1,0 +1,2 @@
+ALTER TABLE tuitions ADD COLUMN salary_max INTEGER DEFAULT NULL;
+ALTER TABLE tuitions ADD COLUMN salary_unit TEXT NOT NULL DEFAULT 'month';
